@@ -1,11 +1,11 @@
 Rails.application.routes.draw do
   
   # root 'users#new'
-  root 'application#show'
+  root 'users#new'
+  get '/login' => 'users#new'
+
   post '/login' => 'application#login'
 
-  get '/login' => 'users#new'
-  
   post '/posts/:post_id' => "comments#create"
 
 
