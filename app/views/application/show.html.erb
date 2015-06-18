@@ -1,0 +1,67 @@
+<div class="container">
+  <h1>Welcome to Hacker News Clone</h1>
+
+  <h3>All posts</h3>
+  <ul>
+    <% @posts.each_with_index do |post, index| %>
+      <li id="post<%= post.id %>">
+        <a href="/posts/<%= post.id %>"><%= post.post_desc %>
+        </a>
+        <br/>
+        <span>
+          <%= @post_votes[index] %> points
+        </span>
+          by <a href="/users/<%= post.user.id %>"><%= post.user.username %></a> | <%= post.comments.count %> comments
+        <br/>
+        <button <%= "disabled" if post.posts_votes.find_by(user_id: session[:id]) && post.posts_votes.find_by_user_id(session[:id]).vote == 1 %> class="upvote" data-post-id="<%= post.id %>" width="40px" height="40px">Upvote</button>
+        <button <%= "disabled" if post.posts_votes.find_by(user_id: session[:id]) && post.posts_votes.find_by_user_id(session[:id]).vote == -1 %> class="downvote" data-post-id="<%= post.id %>" width="40px" height="40px">Downvote</button>
+
+
+      </li>
+      <br/>
+    <% end %>
+  </ul>
+</div>
+
+<script>
+$(document).ready(function() {
+
+  // Check if any post-vote combination for that user already exists and change upvote/downvote button to disabled
+
+
+  $(".upvote").on("click", function(event) {
+    event.preventDefault();
+    var postId = $(this).data("post-id");
+    var url = "/posts/" + postId + "/vote"
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: {"post_id": postId,
+               "vote": 1},
+        dataType: "json"
+      }).done(function(response){
+        debugger
+        $("#post" + response["post_id"] + " span").text(response["votes"] + " points");
+        $("#post" + response["post_id"] + " button" + ".upvote").attr("disabled", "disabled")
+    });
+  });
+
+  $(".downvote").on("click", function(event) {
+    event.preventDefault();
+    var postId = $(this).data("post-id");
+    var url = "/posts/" + postId + "/vote"
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: {"post_id": postId,
+               "vote": -1},
+        dataType: "json"
+      }).done(function(response){
+        $("#post" + response["post_id"] + " span").text(response["votes"] + " points");
+        $("#post" + response["post_id"] + " button" + ".downvote").attr("disabled", "disabled")
+    });
+  });
+
+
+});
+// </script>
