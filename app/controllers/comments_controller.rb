@@ -15,6 +15,18 @@ class CommentsController < ApplicationController
 		end
 	end
 
+	def vote
+		# byebug
+		CommentsVote.create(
+			user_id: session[:id],
+			comment_id: vote_params[:comment_id].to_i,
+			vote: vote_params[:vote].to_i)
+		@comment = Comment.find(vote_params[:comment_id])
+		votes_total = @comment.comments_votes.sum(:vote)
+		# @post.posts_votes.pluck(:vote).inject(:+)
+		render json: {comment_id: @comment.id, votes: votes_total}
+	end
+
 	def index
 		@user = User.find(params[:user_id])
 	end
@@ -22,8 +34,12 @@ class CommentsController < ApplicationController
 	private
 
 	def post_params
-	  	params.permit!
-	    params.require(:post).permit(:post_id ,:comment_desc, :user_id)
-  	end
+  	params.permit!
+    params.require(:post).permit(:post_id ,:comment_desc, :user_id)
+  end
+
+  def vote_params
+		params.permit(:comment_id, :vote)
+  end
 
 end
