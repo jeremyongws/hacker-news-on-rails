@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  
+
   # root 'users#new'
   root 'users#new'
   get '/login' => 'users#new'
@@ -7,11 +7,12 @@ Rails.application.routes.draw do
   post '/login' => 'application#login'
 
   post '/posts/:post_id' => "comments#create"
+  get '/home' => "application#show"
 
 
   # get '/posts/:post_id' => 'posts#show'
 
-  resources :users, shallow: true do 
+  resources :users, shallow: true do
     resources :posts
     resources :comments
   end

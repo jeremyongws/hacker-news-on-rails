@@ -26,7 +26,7 @@ class PostsController < ApplicationController
 		@post = Post.find(vote_params[:post_id])
 		votes_total = @post.posts_votes.sum(:vote)
 		# @post.posts_votes.pluck(:vote).inject(:+)
-		{post_id: @post.id, votes: votes_total}.to_json
+		render json: {post_id: @post.id, votes: votes_total}
 	end
 
 	private
